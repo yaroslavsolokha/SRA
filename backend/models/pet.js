@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             tableName: 'pet',
             associate: function(models) {
-                Pet.belongsTo(models.People);
+                Pet.belongsTo(models.Person);
             }
         }
     });

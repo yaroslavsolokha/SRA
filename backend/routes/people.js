@@ -14,11 +14,12 @@ router.get('/all', function(req, res, next) {
         });
 });
 
-router.get('/person/:id', function(req, res, next) {
+//http://localhost:3001/people/person/yaroslav.solokha@gmail.com
+router.get('/person/:email', function(req, res, next) {
     Person.findOne({
             raw: true,
             where: {
-                id: req.params.id,
+                email: req.params.email,
             }
         })
         .then(function (data) {
@@ -26,26 +27,32 @@ router.get('/person/:id', function(req, res, next) {
         });
 });
 
-//http://localhost:3001/people/create/yaroslav/solokha/yaroslav.solokha@gmail.com
+//http://localhost:3001/people/create/Yaroslav/Solokha/yaroslav.solokha@gmail.com
 router.get('/create/:name/:lastname/:email', function(req, res, next) {
-    Person.build({
-        'first_name' : req.params.name,
-        'last_name' : req.params.lastname,
-        'email' : req.params.email
-    }).save();
-    //@todo add message
+    Person.sync().then(function() {
+        let data = {
+            'first_name' : req.params.name,
+            'last_name' : req.params.lastname,
+            'email' : req.params.email
+        };
+
+        Person.create(data).then(function(post) {
+            res.send(data);
+        })
+    });
 });
 
-router.get('/delete/:name', function(req, res, next) {
+//http://localhost:3001/people/delete/yaroslav.solokha@gmail.com
+router.get('/delete/:email', function(req, res, next) {
     Person.findOne({
         where: {
-            first_name: req.params.name,
+            email: req.params.email,
         }
     })
     .then(function (data) {
         data.destroy();
+        res.send('removed');
     });
-    //@todo add message
 });
 
 module.exports = router;
